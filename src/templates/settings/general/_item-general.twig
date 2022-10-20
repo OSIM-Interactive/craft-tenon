@@ -1,0 +1,26 @@
+{% import '_includes/forms.twig' as forms %}
+
+{{forms.textField({
+    label: 'Custom Plugin Name'|t('osim-tenon'),
+    instructions: 'Overrides the name displayed throughout the control panel.'|t('osim-tenon'),
+    placeholder: "OSiM Tenon"|t('osim-tenon'),
+    name: 'data[pluginName]',
+    value: item.pluginName,
+    errors: item.getErrors('pluginName'),
+})}}
+
+{{forms.selectField({
+    label: 'Viewport Column'|t('osim-tenon'),
+    name: 'data[displayViewport]',
+    options: craft.osimTenon.displayViewportOptions(),
+    value: item.displayViewport,
+    errors: item.getErrors('displayViewport'),
+})}}
+
+{{forms.selectField({
+    label: 'Level Column'|t('osim-tenon'),
+    name: 'data[displayLevel]',
+    options: craft.osimTenon.displayLevelOptions(),
+    value: item.displayLevel,
+    errors: item.getErrors('displayLevel'),
+})}}

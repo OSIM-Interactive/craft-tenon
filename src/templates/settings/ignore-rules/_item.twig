@@ -1,0 +1,147 @@
+{% extends 'osim-tenon/layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% macro comparatorField(config) %}
+    {% embed '_includes/forms/field' with config %}
+        {% block input %}
+            {% import '_includes/forms' as forms %}
+            <div class="flex flex-nowrap">
+                <div>
+                    {{ forms.select({
+                        name: "data[#{config.name}Comparator]",
+                        options: config.comparatorOptions,
+                        value: config.comparatorValue,
+                        describedBy: describedBy,
+                    }) }}
+                </div>
+                <div class="flex-grow">
+                    {{ forms.text({
+                        class: 'ltr',
+                        name: "data[#{config.name}Value]",
+                        value: config.valueValue,
+                        placeholder: config.placeholder??'',
+                        describedBy: describedBy,
+                    }) }}
+                </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
+{% endmacro %}
+
+{% if id %}
+    {% set title = 'Edit Ignore Rule'|t('osim-tenon') %}
+    {% set pageTitle = 'Edit'|t('osim-tenon') %}
+{% else %}
+    {% set title = 'New Ignore Rule'|t('osim-tenon') %}
+    {% set pageTitle = 'New'|t('osim-tenon') %}
+{% endif %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{'Save'|t('osim-tenon')}}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{actionInput('osim-tenon/ignore-rules/save')}}
+    {{redirectInput('osim-tenon/settings/ignore-rules')}}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{id}}">{% endif %}
+
+    {% if item.getFirstErrors('general') %}
+        <div class="error">
+            <span class="visually-hidden">{{'Error:'|t('app')}}</span>
+            {{item.getFirstError('general')}}
+        </div>
+    {% endif %}
+
+    {{forms.textField({
+        first: not item.getFirstErrors('general'),
+        label: 'Name'|t('osim-tenon'),
+        instructions: 'This name is used for your identification only.'|t('osim-tenon'),
+        name: 'data[name]',
+        value: item.name,
+        errors: item.getErrors('name'),
+        required: true,
+    })}}
+
+    {% if craft.osimTenon.hasAccounts or craft.osimTenon.hasViewports %}
+        <h2>{{'Target'|t('osim-tenon')}}</h2>
+
+        {% if craft.osimTenon.hasAccounts %}
+            {{forms.selectField({
+                label: 'Account'|t('osim-tenon'),
+                name: 'data[accountId]',
+                options: craft.osimTenon.accountOptions(''),
+                value: item.accountId,
+                errors: item.getErrors('accountId'),
+            })}}
+        {% endif %}
+
+        {% if craft.osimTenon.hasProjects %}
+            {{forms.selectField({
+                label: "Project"|t('osim-tenon'),
+                name: 'data[projectId]',
+                options: craft.osimTenon.projectOptions(''),
+                value: item.projectId,
+                errors: item.getErrors('projectId'),
+            })}}
+        {% endif %}
+
+        {% if craft.osimTenon.hasViewports %}
+            {{forms.selectField({
+                label: "Viewport"|t('osim-tenon'),
+                name: 'data[viewportId]',
+                options: craft.osimTenon.viewportOptions(''),
+                value: item.viewportId,
+                errors: item.getErrors('viewportId'),
+            })}}
+        {% endif %}
+    {% endif %}
+
+    <h2>{{'Criteria'|t('osim-tenon')}}</h2>
+
+    {{ _self.comparatorField({
+        label: 'Page URL'|t('osim-tenon'),
+        instructions: 'Ignore issues on pages that match this URL comparison.'|t('osim-tenon'),
+        tip: 'For relative urls, prefix with a starting \'/\'.'|t('osim-tenon')~' '~'Query param values will always compare using exact match. Leave query param values empty to ensure not set. Any query params not specified will be ignored.'|t('osim-tenon'),
+        placeholder: '/page/path?queryParam=value'|t('osim-tenon'),
+        name: 'pageUrl',
+        comparatorOptions: craft.osimTenon.comparatorOptions(''),
+        comparatorValue: item.pageUrlComparator,
+        valueValue: item.pageUrlValue,
+        errors: item.getErrors('pageUrlValue')
+    }) }}
+
+    {{forms.textField({
+        type: 'number',
+        label: 'Best Practice ID'|t('osim-tenon'),
+        name: 'data[errorGroupId]',
+        value: item.errorGroupId,
+        errors: item.getErrors('errorGroupId'),
+        min: 0,
+    })}}
+
+    {{forms.textField({
+        type: 'number',
+        label: 'Test ID'|t('osim-tenon'),
+        name: 'data[errorId]',
+        value: item.errorId,
+        errors: item.getErrors('errorId'),
+        min: 0,
+    })}}
+
+    {{ _self.comparatorField({
+        label: 'Error XPath'|t('osim-tenon'),
+        instructions: 'Ignore issues that match this XPath comparison.'|t('osim-tenon'),
+        placeholder: '/main[1]/'|t('osim-tenon'),
+        name: 'errorXpath',
+        comparatorOptions: craft.osimTenon.comparatorOptions(''),
+        comparatorValue: item.errorXpathComparator,
+        valueValue: item.errorXpathValue,
+        errors: item.getErrors('errorXpathValue')
+    }) }}
+
+{% endblock %}

@@ -1,0 +1,1 @@
+.osim-tenon-overlay{position:absolute;border:.125rem solid red;background-color:rgba(255,0,0,.5333333333);border-radius:.125rem;z-index:9999;animation:osim-teon-pulse-animation 3s infinite}@keyframes osim-teon-pulse-animation{0%{box-shadow:0 0 0 0px rgba(255,0,0,.4)}100%{box-shadow:0 0 0 1rem rgba(255,0,0,0)}}

@@ -1,0 +1,15 @@
+{% extends 'osim-tenon/layouts/_settings' %}
+
+{% block actionButton %}
+    {# Remove save button. #}
+{% endblock %}
+
+{% block content %}
+    <p>{{'You must set up at least one account before you can add a project.'|t('osim-tenon')}}</p>
+
+	<div class="btngroup">
+        <a href="{{ url('osim-tenon/settings/accounts/new') }}" class="btn submit add icon">
+            {{'New Account'|t('osim-tenon')}}
+        </a>
+    </div>
+{% endblock %}

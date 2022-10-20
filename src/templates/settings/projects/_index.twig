@@ -1,0 +1,7 @@
+{% set title = 'Projects'|t('osim-tenon') %}
+
+{% if craft.osimTenon.accountOptions is empty %}
+    {{include('osim-tenon/settings/projects/_index-message')}}
+{% else %}
+    {{include('osim-tenon/settings/projects/_index-results')}}
+{% endif %}

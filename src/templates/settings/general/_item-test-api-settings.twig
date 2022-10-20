@@ -1,0 +1,64 @@
+{% import '_includes/forms.twig' as forms %}
+
+<div class="notice has-icon">
+    <span class="icon" aria="hidden"></span>
+    <span class="visually-hidden">{{'Tip:'|t('app')}}</span>
+    {{'The test API settings cascade down in the following order: Project > Account > Global > Tenon.'|t('osim-tenon')}}
+</div>
+
+{{forms.selectField({
+    label: 'Certainty'|t('osim-tenon'),
+    instructions: 'Sometimes accessibility tools will return results that the tool isn\'t completely sure is a real issue. The certainty parameter allows you to filter out these "uncertain" results by choosing a minimum acceptable certainty score.'|t('osim-tenon'),
+    name: 'data[certainty]',
+    options: craft.osimTenon.tenonCertaintyOptions('Use Tenon Settings'|t('osim-tenon')),
+    value: item.certainty,
+    errors: item.getErrors('certainty'),
+})}}
+
+{{forms.selectField({
+    label: 'Priority'|t('osim-tenon'),
+    instructions: 'Each issue reported will be given a calculated priority score which can then be used to filter or order results.'|t('osim-tenon'),
+    name: 'data[priority]',
+    options: craft.osimTenon.tenonPriorityOptions('Use Tenon Settings'|t('osim-tenon')),
+    value: item.priority,
+    errors: item.getErrors('priority'),
+})}}
+
+{{forms.selectField({
+    label: 'Level'|t('osim-tenon'),
+    instructions: 'The "lowest" WCAG level to test against.'|t('osim-tenon'),
+    name: 'data[level]',
+    options: craft.osimTenon.tenonLevelOptions('Use Tenon Settings'|t('osim-tenon')),
+    value: item.level,
+    errors: item.getErrors('level'),
+})}}
+
+{{forms.selectField({
+    label: 'Store'|t('osim-tenon'),
+    instructions: 'The store setting indicates whether or not Tenon should store your results.'|t('osim-tenon'),
+    name: 'data[store]',
+    options: craft.osimTenon.tenonStoreOptions('Use Tenon Settings'|t('osim-tenon')),
+    value: item.store|number,
+    errors: item.getErrors('store'),
+})}}
+
+{{forms.textField({
+    type: 'number',
+    label: 'Delay'|t('osim-tenon'),
+    instructions: 'The amount of time, in miliseconds, Tenon should wait before beginning execution of tests.'|t('osim-tenon'),
+    name: 'data[delay]',
+    value: item.delay,
+    tip: 'Leave blank to use Tenon settings.'|t('osim-tenon'),
+    errors: item.getErrors('delay'),
+    min: 0,
+})}}
+
+{{forms.textField({
+    label: 'User-Agent String'|t('osim-tenon'),
+    instructions: 'The User-Agent string to be sent when Tenon requests a URL for testing.'|t('osim-tenon'),
+    name: 'data[uaString]',
+    value: item.uaString,
+    tip: 'Leave blank to use Tenon settings.'|t('osim-tenon'),
+    errors: item.getErrors('uaString'),
+    min: 0,
+})}}

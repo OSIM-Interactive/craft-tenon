@@ -1,0 +1,45 @@
+{% if not craft.osimTenon.hasIgnoreRules %}
+    {% redirect 'osim-tenon/settings/ignore-rules/new' %}
+{% endif %}
+
+{% extends 'osim-tenon/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set title = 'Ignore Rules'|t('osim-tenon') %}
+
+{% block actionButton %}
+    <a href="{{ url('osim-tenon/settings/ignore-rules/new') }}" class="btn submit add icon">
+        {{'New Rule'|t('osim-tenon')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_tenon_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+	{% set tableData = tableData|merge([{
+        id: item.id,
+        title: item.name,
+        url: url('osim-tenon/settings/ignore-rules/edit/' ~ item.id),
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('app', 'Name'),
+        },
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_tenon_index_table',
+        deleteAction: 'osim-tenon/ignore-rules/delete',
+        emptyMessage: Craft.t('osim-tenon', 'No ignore rules exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

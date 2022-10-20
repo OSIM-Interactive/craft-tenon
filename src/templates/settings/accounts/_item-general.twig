@@ -1,0 +1,19 @@
+{% import '_includes/forms' as forms %}
+
+{{forms.textField({
+    label: 'Name'|t('osim-tenon'),
+    instructions: 'This name is used for your identification only.'|t('osim-tenon'),
+    name: 'data[name]',
+    value: item.name,
+    errors: item.getErrors('name'),
+    required: true,
+})}}
+
+{{forms.autosuggestField({
+    label: 'Tenon API Key'|t('osim-tenon'),
+    name: 'data[tenonApiKey]',
+    value: item.tenonApiKey,
+    errors: item.getErrors('tenonApiKey'),
+    required: true,
+    suggestEnvVars: true
+})}}

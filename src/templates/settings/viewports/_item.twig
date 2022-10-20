@@ -1,0 +1,52 @@
+{% extends 'osim-tenon/layouts/_settings' %}
+{% import '_includes/forms' as forms %}
+
+{% if id %}
+    {% set title = 'Edit Viewport'|t('osim-tenon') %}
+    {% set pageTitle = 'Edit'|t('osim-tenon') %}
+{% else %}
+    {% set title = 'New Viewport'|t('osim-tenon') %}
+    {% set pageTitle = 'New'|t('osim-tenon') %}
+{% endif %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('osim-tenon') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-tenon/viewports/save') }}
+    {{ redirectInput('osim-tenon/settings/viewports') }}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{ id }}">{% endif %}
+
+    {{ forms.textField({
+        first: true,
+        label: 'Name'|t('osim-tenon'),
+        instructions: 'This name is used for your identification only.'|t('osim-tenon'),
+        name: 'data[name]',
+        value: item.name,
+        errors: item.getErrors('name'),
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Width'|t('osim-tenon'),
+        name: 'data[width]',
+        value: item.width,
+        errors: item.getErrors('width'),
+        required: true,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Height'|t('osim-tenon'),
+        name: 'data[height]',
+        value: item.height,
+        errors: item.getErrors('height'),
+        required: true,
+    }) }}
+
+{% endblock %}

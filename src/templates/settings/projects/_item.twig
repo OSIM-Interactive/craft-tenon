@@ -1,0 +1,62 @@
+{% if craft.osimTenon.accountOptions is empty %}
+    {% redirect 'osim-tenon/settings/projects' %}
+{% endif %}
+
+{% extends 'osim-tenon/layouts/_settings' %}
+
+{% if id %}
+    {% set title = 'Edit Project'|t('osim-tenon') %}
+    {% set pageTitle = 'Edit'|t('osim-tenon') %}
+{% else %}
+    {% set title = 'New Project'|t('osim-tenon') %}
+    {% set pageTitle = 'New'|t('osim-tenon') %}
+{% endif %}
+
+{% set tabs = [
+    {
+        label: 'General'|t('osim-tenon'),
+        url: '#settings-project-general',
+        class: null,
+    }
+] %}
+
+{% if not craft.osimTenon.viewportOptions is empty %}
+    {% set tabs = tabs|merge([{
+        label: 'Viewports'|t('osim-tenon'),
+        url: '#settings-project-viewports',
+        class: null,
+    }]) %}
+{% endif %}
+
+{% set tabs = tabs|merge([{
+    label: 'Test API Settings'|t('osim-tenon'),
+    url: '#settings-project-test-api-settings',
+    class: null,
+}]) %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('osim-tenon') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-tenon/projects/save') }}
+    {{ redirectInput('osim-tenon/settings/projects') }}
+
+    {% if id %}<input type="hidden" name="data[id]" value="{{ id }}">{% endif %}
+
+	<div id="settings-project-general">
+		{% include 'osim-tenon/settings/projects/_item-general' %}
+	</div>
+
+	<div id="settings-project-viewports" class="hidden">
+		{% include 'osim-tenon/settings/projects/_item-viewports' %}
+	</div>
+
+	<div id="settings-project-test-api-settings" class="hidden">
+		{% include 'osim-tenon/settings/projects/_item-test-api-settings' %}
+	</div>
+{% endblock %}

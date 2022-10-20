@@ -1,0 +1,11 @@
+{% extends 'osim-tenon/layouts/_index' %}
+
+{% set elementType = 'osim\\craft\\tenon\\elements\\Page' %}
+
+{% set crumbs = [
+    { label: craft.osimTenon.name, url: url('osim-tenon') },
+] %}
+
+{% js %}
+    window.osimTenonProjectId = '{{projectId|e('js')}}';
+{% endjs %}

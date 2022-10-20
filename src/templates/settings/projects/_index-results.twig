@@ -1,0 +1,57 @@
+{% if not craft.osimTenon.hasProjects %}
+    {% redirect 'osim-tenon/settings/projects/new' %}
+{% endif %}
+
+{% extends 'osim-tenon/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% block actionButton %}
+    <a href="{{ url('osim-tenon/settings/projects/new') }}" class="btn submit add icon">
+        {{'New Project'|t('osim-tenon')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_tenon_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+    {% set tableData = tableData|merge([{
+        id: item.id,
+        title: craft.osimTenon.siteOptions[item.siteId],
+        url: url('osim-tenon/settings/projects/edit/' ~ item.id),
+        tenonProjectId: item.tenonProjectId,
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('app', 'Site'),
+        },
+        {
+            name: 'tenonProjectId',
+            title: Craft.t('osim-tenon', 'Tenon Project ID'),
+        }
+    ];
+
+    var count = {{tableData|length}};
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_tenon_index_table',
+        deleteAction: 'osim-tenon/projects/delete',
+        deleteCallback: function () {
+            --count;
+
+            if (count == 0) {
+                document.getElementById('osim_tenon_ignore_rules_nav').remove()
+            }
+        },
+        emptyMessage: Craft.t('osim-tenon', 'No projects exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

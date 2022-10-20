@@ -1,0 +1,49 @@
+{% extends '_layouts/cp' %}
+
+{% set fullPageForm = true %}
+
+{% set selectedSubnavItem = 'settings' %}
+
+{# 'hd': {heading: 'Settings'|t('osim-tenon')}, #}
+{% set navItems = {
+    'general': {title: 'General Settings'|t('osim-tenon')},
+    'accounts': {title: 'Accounts'|t('osim-tenon')},
+    'viewports': {title: 'Viewports'|t('osim-tenon')},
+    'projects': {title: 'Projects'|t('osim-tenon')},
+    'ignore-rules': {title: 'Ignore Rules'|t('osim-tenon')},
+} %}
+
+{% set selectedItem = craft.app.request.getSegment(3)|default %}
+
+{% set crumbs = [
+    { label: craft.osimTenon.name, url: url('osim-tenon') },
+    { label: 'Settings'|t('osim-tenon'), url: url('osim-tenon/settings') },
+] %}
+
+{% set sectionTitle = 'Settings'|t('osim-tenon') %}
+
+{% if pageTitle ?? false %}
+    {% set docTitle = pageTitle~' - '~navItems[selectedItem].title~' - '~sectionTitle %}
+{% else %}
+    {% set docTitle = navItems[selectedItem].title~' - '~sectionTitle %}
+{% endif %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for id, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li{% if item.id is defined %} id="{{item.id}}"{% endif %}>
+                        <a href="{{url('osim-tenon/settings/'~id)}}"
+                            {% if id == selectedItem %} class="sel"{% endif %}
+                        >
+                            {{item.title}}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

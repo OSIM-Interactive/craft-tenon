@@ -1,0 +1,37 @@
+{% extends 'osim-tenon/layouts/_settings' %}
+
+{% set title = 'General Settings'|t('osim-tenon') %}
+
+{% set tabs = [
+    {
+        label: 'General'|t('osim-tenon'),
+        url: '#settings-general-general',
+        class: null,
+    },
+    {
+        label: 'Test API Settings'|t('osim-tenon'),
+        url: '#settings-general-test-api-settings',
+        class: null,
+    }
+] %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('osim-tenon') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-tenon/settings/save') }}
+    {{ redirectInput('osim-tenon/settings/general') }}
+
+	<div id="settings-general-general">
+		{% include 'osim-tenon/settings/general/_item-general' %}
+	</div>
+
+	<div id="settings-general-test-api-settings" class="hidden">
+		{% include 'osim-tenon/settings/general/_item-test-api-settings' %}
+	</div>
+{% endblock %}

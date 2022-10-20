@@ -1,0 +1,15 @@
+{% import '_includes/forms' as forms %}
+
+<div class="notice has-icon">
+    <span class="icon" aria="hidden"></span>
+    <span class="visually-hidden">{{'Tip:'|t('app')}}</span>
+    {{'The default Tenon account viewport will be used if no viewports are specified.'|t('osim-tenon')}}
+</div>
+
+{{forms.checkboxSelectField({
+    label: 'Viewports'|t('osim-tenon'),
+    name: 'data[viewportIds]',
+    options: craft.osimTenon.viewportOptions(),
+    values: item.viewportIds,
+    errors: item.getErrors('viewportIds'),
+})}}

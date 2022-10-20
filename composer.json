@@ -1,0 +1,39 @@
+{
+  "name": "osim/craft-tenon",
+  "description": "A Craft CMS plugin that integrates Tenon.io accessibility checker.",
+  "type": "craft-plugin",
+  "keywords": [
+      "craft",
+      "cms",
+      "craftcms",
+      "craft-plugin",
+      "tenon",
+      "accessibility"
+  ],
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "OSiM Interactive",
+      "homepage": "https://osim.digital"
+    }
+  ],
+  "support": {
+    "email": "support@osim.digital",
+    "issues": "https://github.com/OSIM-Interactive/craft-tenon/issues?state=open",
+    "source": "https://github.com/OSIM-Interactive/craft-tenon",
+    "docs": "https://github.com/OSIM-Interactive/craft-tenon/blob/main/README.md"
+  },
+  "require": {
+    "craftcms/cms": "^4.0.0",
+    "xlient/xml-sitemap": "^1.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "osim\\craft\\tenon\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "OSiM Tenon",
+    "handle": "osim-tenon"
+  }
+}

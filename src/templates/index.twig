@@ -1,0 +1,84 @@
+{% extends "_layouts/cp" %}
+
+{% set fullPageForm = true %}
+
+{% set title = 'Overview'|t('osim-tenon') %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Run Tests'|t('osim-tenon') }}">
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {{ actionInput('osim-tenon/projects/test') }}
+    {{ redirectInput('osim-tenon') }}
+
+    <div class="readable">
+        <h2>{{'General'|t('osim-tenon')}}</h2>
+
+        <table class="data fullwidth fixed-layout" dir="ltr">
+            <tbody>
+                <tr>
+                    <th class="light">{{'Pages'|t('osim-tenon')}}</th>
+                    <td>{{craft.osimTenon.pageCount}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'Issues'|t('osim-tenon')}}</th>
+                    <td>{{craft.osimTenon.issueCount}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>{{'Unresolved Issues'|t('osim-tenon')}}</h2>
+        <table class="data fullwidth fixed-layout" dir="ltr">
+            <tbody>
+                <tr>
+                    <th class="light">{{'Total'|t('osim-tenon')}}</th>
+                    <td>{{craft.osimTenon.issueCount(false)}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'Level A'|t('osim-tenon')}}</th>
+                    <td>{{craft.osimTenon.issueCount(false, 'A')}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'Level AA'|t('osim-tenon')}}</th>
+                    <td>{{craft.osimTenon.issueCount(false, 'AA')}}</td>
+                </tr>
+                <tr>
+                    <th class="light">{{'Level AAA'|t('osim-tenon')}}</th>
+                    <td>{{craft.osimTenon.issueCount(false, 'AAA')}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>{{'Tenon.io'|t('osim-tenon')}}</h2>
+        <table class="data fullwidth fixed-layout" dir="ltr">
+            <tbody>
+                <tr>
+                    <td>
+                        <a class="go" href="https://tenon.io" rel="noopener" target="_blank">
+                            <span dir="ltr">https://tenon.io</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="go" href="https://tenon.io/documentation/what-tenon-tests" rel="noopener" target="_blank">
+                            <span dir="ltr">{{'What Tenon Tests'|t('osim-tenon')}}</span>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <a class="go" href="https://tenon.io/documentation/terms-of-use" rel="noopener" target="_blank">
+                            <span dir="ltr">{{'Terms of Use'|t('osim-tenon')}}</span>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

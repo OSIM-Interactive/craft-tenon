@@ -1,0 +1,164 @@
+{% do view.registerAssetBundle('craft\\web\\assets\\cp\\CpAsset') %}
+{% do view.registerAssetBundle("craft\\web\\assets\\vue\\VueAsset") %}
+
+{%- set id = id ?? "autosuggest#{random()}" %}
+{%- set containerId = "#{id}-container" %}
+{%- set autosuggestId = "#{id}-autosuggest" %}
+{%- set labelledBy = labelledBy ?? null -%}
+
+{%- set class = (class ?? [])|explodeClass|merge([
+    'text',
+    (disabled ?? false) ? 'disabled' : null,
+    not (size ?? false) ? 'fullwidth' : null,
+]|filter) %}
+
+<div id="{{ containerId }}" class="autosuggest-container autosuggest-container-osim-tenon">
+    {% verbatim %}
+    <vue-autosuggest
+        :suggestions="filteredOptions"
+        :get-suggestion-value="getSuggestionValue"
+        :input-props="inputProps"
+        :component-attr-id-autosuggest="id"
+        @selected="onSelected"
+        @focus="onFocus"
+        @blur="onBlur"
+        @input="onInputChange"
+        v-model="inputProps.initialValue"
+    >
+        <template slot-scope="{suggestion}">
+            {{suggestion.item.name}}
+            <span v-if="suggestion.item.hint" class="light">– {{suggestion.item.hint}}</span>
+        </template>
+    </vue-autosuggest>
+    {% endverbatim %}
+</div>
+
+{% js %}
+new Vue({
+    el: "#{{ containerId|namespaceInputId|e('js') }}",
+
+    data() {
+        {% block data %}
+        var data = {{ {
+            query: (value ?? '')|lower,
+            selected: '',
+            filteredOptions: [],
+            suggestions: [],
+            id: autosuggestId,
+            currentSuggestionSourceUrl: null,
+            suggestionSourceUrl: suggestionSourceUrl,
+            suggestionSourceParams: suggestionSourceParams ?? [],
+            inputProps: {
+                class: class|join(' '),
+                initialValue: value ?? '',
+                style: style ?? '',
+                id: id|namespaceInputId,
+                name: (name ?? '')|namespaceInputName,
+                size: size ?? '',
+                maxlength: maxlength ?? '',
+                autofocus: autofocus ?? false,
+                disabled: disabled ?? false,
+                title: title ?? '',
+                placeholder: placeholder ?? '',
+                'aria-describedby': describedBy ?? false,
+                'aria-labelledby': labelledBy ?? false,
+            }|merge(inputProps ?? inputAttributes ?? [], recursive=true)|filter,
+        }|json_encode|raw }};
+        {% endblock %}
+        return data;
+    },
+
+    methods: {
+        {% block methods %}
+        onInputChange(q) {
+            this.query = (q || '').toLowerCase()
+            this.updateFilteredOptions()
+        },
+        onFocus() {
+            this.updateSuggestions()
+        },
+        onBlur(e) {
+            if (e.relatedTarget) {
+                this.filteredOptions = []
+            }
+        },
+        updateSuggestions() {
+            let sourceUrl = this.suggestionSourceUrl
+
+            for (sourceParam of Object.keys(this.suggestionSourceParams)) {
+                const sourceParamValue = $('#' + this.suggestionSourceParams[sourceParam]).val()
+                sourceUrl = sourceUrl.replace('{\{' + sourceParam + '}\}', sourceParamValue)
+            }
+
+            sourceUrl = Craft.getCpUrl(sourceUrl)
+
+            if (this.currentSuggestionSourceUrl === sourceUrl) {
+                this.updateFilteredOptions();
+                return
+            }
+
+            this.currentSuggestionSourceUrl = sourceUrl
+
+            fetch(sourceUrl, {
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then((response) => response.json())
+            .catch(() => {
+                this.suggestions = []
+                this.updateFilteredOptions()
+            })
+            .then((data) => {
+                this.suggestions = data.options
+                this.updateFilteredOptions()
+            })
+        },
+        updateFilteredOptions() {
+            let filtered = [{
+                label: null,
+                data: []
+            }]
+
+            for (suggestion of this.suggestions) {
+                if (suggestion.name.toLowerCase().indexOf(this.query) !== -1 ||
+                    suggestion.hint.toLowerCase().indexOf(this.query) !== -1
+                ) {
+                    filtered[0].data.push({
+                        value: suggestion.value,
+                        name: suggestion.name,
+                        hint: suggestion.hint ?? null,
+                        priority: suggestion.priority ?? 0
+                    })
+                }
+            }
+
+            filtered[0].data.sort((a, b) => {
+                if (a.priority === b.priority) {
+                    if (a.name === b.name) {
+                        return a.id > b.id ? 1 : -1
+                    }
+
+                    return a.name > b.name ? 1 : -1
+                }
+
+                return a.priority < b.priority ? 1 : -1
+            })
+
+            this.filteredOptions = filtered
+        },
+        onSelected(option) {
+            if (!option) {
+                return;
+            }
+
+            this.selected = option.item;
+        },
+        getSuggestionValue(suggestion) {
+            return suggestion.item.value;
+        }
+        {% endblock %}
+    }
+})
+{% endjs %}

@@ -1,0 +1,50 @@
+{% if not craft.osimTenon.hasAccounts %}
+    {% redirect 'osim-tenon/settings/accounts/new' %}
+{% endif %}
+
+{% extends 'osim-tenon/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set title = 'Accounts'|t('osim-tenon') %}
+
+{% block actionButton %}
+    <a href="{{ url('osim-tenon/settings/accounts/new') }}" class="btn submit add icon">
+        {{'New Account'|t('osim-tenon')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_tenon_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+	{% set tableData = tableData|merge([{
+        id: item.id,
+        url: url('osim-tenon/settings/accounts/edit/' ~ item.id),
+        title: item.name,
+        tenonApiKey: item.tenonApiKey,
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('osim-tenon', 'Name'),
+        },
+        {
+            name: 'tenonApiKey',
+            title: Craft.t('osim-tenon', 'Tenon API Key'),
+        }
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_tenon_index_table',
+        deleteAction: 'osim-tenon/accounts/delete',
+        emptyMessage: Craft.t('osim-tenon', 'No accounts exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

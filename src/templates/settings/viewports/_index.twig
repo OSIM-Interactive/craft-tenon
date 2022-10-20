@@ -1,0 +1,55 @@
+{% if not craft.osimTenon.hasViewports %}
+    {% redirect 'osim-tenon/settings/viewports/new' %}
+{% endif %}
+
+{% extends 'osim-tenon/layouts/_settings' %}
+{% do view.registerAssetBundle('craft\\web\\assets\\admintable\\AdminTableAsset') -%}
+
+{% set title = 'Viewports'|t('osim-tenon') %}
+
+{% block actionButton %}
+    <a href="{{ url('osim-tenon/settings/viewports/new') }}" class="btn submit add icon">
+        {{'New Viewport'|t('osim-tenon')}}
+    </a>
+{% endblock %}
+
+{% block content %}
+    <div id="osim_tenon_index_table"></div>
+{% endblock %}
+
+{% set tableData = [] %}
+
+{% for item in items %}
+	{% set tableData = tableData|merge([{
+        id: item.id,
+        title: item.name,
+        url: url('osim-tenon/settings/viewports/edit/' ~ item.id),
+        width: item.width,
+        height: item.height,
+    }]) %}
+{% endfor %}
+
+{% js %}
+    var columns = [
+        {
+            name: '__slot:title',
+            title: Craft.t('app', 'Name'),
+        },
+        {
+            name: 'width',
+            title: Craft.t('osim-tenon', 'Width'),
+        },
+        {
+            name: 'height',
+            title: Craft.t('osim-tenon', 'Height'),
+        }
+    ];
+
+    new Craft.VueAdminTable({
+        columns: columns,
+        container: '#osim_tenon_index_table',
+        deleteAction: 'osim-tenon/viewports/delete',
+        emptyMessage: Craft.t('osim-tenon', 'No viewports exist yet.'),
+        tableData: {{tableData|json_encode|raw}},
+    });
+{% endjs %}

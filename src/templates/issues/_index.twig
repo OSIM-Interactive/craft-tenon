@@ -1,0 +1,20 @@
+{% extends 'osim-tenon/layouts/_index' %}
+
+{% set elementType = 'osim\\craft\\tenon\\elements\\Issue' %}
+
+{% if pageId %}
+    {% set crumbs = [
+        { label: craft.osimTenon.name, url: url('osim-tenon') },
+        { label: 'Pages'|t('osim-tenon'), url: url('osim-tenon/pages') },
+    ] %}
+{% else %}
+    {% set crumbs = [
+        { label: craft.osimTenon.name, url: url('osim-tenon') },
+    ] %}
+{% endif %}
+
+{% js %}
+    window.osimTenonPageId = '{{pageId|e('js')}}';
+    window.osimTenonProjectId = '{{projectId|e('js')}}';
+    window.osimTenonViewportId = '{{viewportId|e('js')}}';
+{% endjs %}
